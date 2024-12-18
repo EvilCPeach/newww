@@ -11,8 +11,8 @@
 //     }
 // });
 
-let div = document.querySelector('div');
-let button = document.querySelector('button');
+// let div = document.querySelector('div');
+// let button = document.querySelector('button');
 // let button2 = document.getElementById('two');
 // let button3 = document.getElementById('three');
 // button.addEventListener('click', function() {
@@ -82,16 +82,74 @@ let button = document.querySelector('button');
 //         div.innerHTML = ' ';
 //     }
 // });
-let array = [1,2,3,4];
-let form = document.querySelector('form');
-let button2 = document.querySelector('input[type=submit]');
-button2.addEventListener('click',function(event){
+// let array = [1,2,3,4];
+// let form = document.querySelector('form');
+// let button2 = document.querySelector('input[type=submit]');
+// button2.addEventListener('click',function(event){
+//     event.preventDefault();
+//     let formData = new FormData(form);
+//     for (let p of formData.values()) {
+//         for(let elem of array){
+//             div.innerHTML = elem[p];
+//         }
+//     }
+// });
+
+let button = document.getElementById('btn');
+let buttonJson = document.getElementById('btnJson');
+let buttonGet = document.getElementById('btnGet');
+let input = document.querySelector('input');
+let div = document.querySelector('div');
+button.addEventListener('click', async (event)=>{
     event.preventDefault();
-    let formData = new FormData(form);
-    for (let p of formData.values()) {
-        for(let elem of array){
-            div.innerHTML = elem[p];
+    try{
+        let inputValue = input.value;
+        let query = await fetch(`ajaxPost.php`,{
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({login: inputValue})
+        });
+        let response = await query.text();
+        if(response){
+            div.innerHTML = response;
+        }
+        
+    } 
+    catch (error){
+        console.log(error);
+    };
+});
+buttonJson.addEventListener('click', async (event) => {
+    event.preventDefault();
+    try{
+        let inputValue = input.value;
+        let query = await fetch(`ajaxJson.php`,{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'login': inputValue})
+        });
+        let response = await query.text();
+        if(response){
+            console.log(query.body);
+            div.innerHTML = response;
+        }
+        
+    } 
+    catch (error){
+        console.log(error);
+    };
+});
+buttonGet.addEventListener('click', async (event) => {
+    event.preventDefault();
+    try{
+        let inputValue = input.value;
+        let query = await fetch(`ajaxGet.php?login=${inputValue}`);
+        let response = await query.text();
+        if(response){
+            div.innerHTML = response;
         }
     }
-
-});
+    catch (error){
+        console.log(error);
+    }
+})
