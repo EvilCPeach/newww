@@ -100,20 +100,31 @@ let buttonJson = document.getElementById('btnJson');
 let buttonGet = document.getElementById('btnGet');
 let input = document.querySelector('input');
 let div = document.querySelector('div');
+// input.addEventListener('blur', async (event) => {
+//     event.preventDefault();
+//     try{
+
+//     }
+// });
 button.addEventListener('click', async (event)=>{
     event.preventDefault();
     try{
         let inputValue = input.value;
-        let query = await fetch(`ajaxPost.php`,{
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: new URLSearchParams({login: inputValue})
-        });
-        let response = await query.text();
-        if(response){
-            div.innerHTML = response;
+        if(inputValue != ''){
+            let query = await fetch(`ajaxPost.php`,{
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({login: inputValue})
+            });
+            let response = await query.text();
+            if(response){
+                console.log(response);
+                div.innerHTML = response;
+            }
         }
-        
+        else{
+            div.innerHTML = '<p> Хотите <a href="reg.html"> зарегистрироваться </a>? </p> ';
+        } 
     } 
     catch (error){
         console.log(error);
@@ -130,7 +141,6 @@ buttonJson.addEventListener('click', async (event) => {
         });
         let response = await query.text();
         if(response){
-            console.log(query.body);
             div.innerHTML = response;
         }
         

@@ -1,35 +1,41 @@
 let button = document.getElementById('addPost');
 let input = document.querySelector('input');
 let FIO = document.getElementById('FIO');
-let div = document.querySelector('div');
+let div = document.getElementById('modal');
+let closee = document.querySelector('button');
+let body = document.querySelector('body');
 let forma = document.querySelector('form');
+closee.addEventListener('click', function(){
+    div.classList.add('hidden');
+    body.classList.remove('dark');
+    forma.classList.remove('noneClick');
+})
 button.addEventListener('click', async (event) => {
     event.preventDefault();
     try{
-        let formData = new FormData(forma);
-        let i = 0;
-        for(let value of formData.values()){
-            let loginValue = input.value;
-            let FIOvalue = FIO.value;
-            if(i = 0){
-                loginValue = value;
-                i++;
+            if(input.value != '' && FIO.value != ''){
+                button.removeAttribute('disabled');
+                let query = await fetch('addVillager.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({login: input.value, FIO: FIO.value})
+                });
+                let response = await query.text();
+                if(response == 'exists'){
+                    forma.classList.add('noneClick');
+                    body.classList.add('dark')
+                    div.classList.remove('hidden');
+                    console.log(response);
+                }
+                else{
+                    div.classList.add('hidden');
+                    console.log(response);
+                }
             }
-            else if (i = 1){
-                FIOvalue = value;
+            else{
+                button.setAttribute('disabled');
+                console.log('форма пустая');
             }
-            console.log(value);
-            let query = await fetch('addVillager.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: {'login': loginValue, 'FIO': FIOvalue}
-            });
-            let response = await query.text();
-            if(response){
-            div.innerHTML = response;
-            console.log(response);
-        } 
-        }
     }
     catch (error){
         console.log(error);
